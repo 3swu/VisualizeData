@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
  * Created by wulei on 2017/10/21
  * DAO interface:UserMapper->UserMapper.xml
  */
-
 public interface UserMapper {
     public User getUserById(int id);
 

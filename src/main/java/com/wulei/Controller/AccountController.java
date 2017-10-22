@@ -29,7 +29,7 @@ public class AccountController {
      * @param password
      * @return 返回json数据，登录成功返回"success",登录失败返回"failed"
      */
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody String login(HttpSession session,
                                       @RequestParam("username") String username,
                                       @RequestParam("password") String password){

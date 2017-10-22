@@ -10,6 +10,7 @@
 <head>
     <script src="/js/jquery-3.2.1.min.js"></script>
     <script>
+       // var path_content = "http://localhost:8080/VisualizeData/";
         function validForm(form) {
             for(var i=0;i<form.elements.length;i++){
                 if(form.elements[i].type == "text" && form.elements[i].value == "") {
@@ -18,23 +19,27 @@
                 }
             }
             $.ajax({
-                url:'action/login',
+                url:'account/login',
                 type:'POST',
-                data:{'username':form.elements[0].value,'password':form.elements[1].value},
-                success:function(data){
-                    alert(data);
+                data:$("#form").serialize(),
+                success:function(){
+                    $.ajax({
+                        url:form.elements[0].value,
+                        type:'POST'
+                    })
                 }
             })
+
         }
     </script>
     <title>Title</title>
 </head>
 <body>
 <div id="login">
-    <form action="/account/login" method="post" onsubmit="validForm(this)">
-        username:<input name="input-username" id="username"/>
-        password:<input name="input-password" id="password"/>
-        <button type="submit"/>
+    <form id="form" action="/account/login" method="post" onsubmit="validForm(this)">
+        username:<input name="username" id="username"/><br/>
+        password:<input name="password" id="password"/><<br/>
+        <button type="submit" id="formsubmit"/>
     </form>
 </div>
 </body>

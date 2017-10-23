@@ -53,9 +53,9 @@
 
     <!-- MultipartResolver-->
     <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
-    <!-- resource -->
+    <!-- resource
     <mvc:resources mapping="/js/**" location="/js/"/>
-    <!-- interceptor -->
+     interceptor -->
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/*"/>

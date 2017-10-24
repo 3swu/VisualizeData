@@ -14,4 +14,5 @@ public interface FileService {
     public String uploadFile(MultipartFile uploadFile, HttpSession session);
 
     public List<File> getUserFileList(HttpSession session);
+
 }

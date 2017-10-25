@@ -1,7 +1,9 @@
 package com.wulei.Service.Impl;
 
 import com.wulei.Service.XlsxResolveService;
-import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * @author wulei
@@ -70,6 +73,8 @@ public class XlsxResolveServiceImpl implements XlsxResolveService {
         List<String> columnList = new ArrayList<String>();
         int lastCellNum = sheet.getRow(0).getLastCellNum();
 
+        XSSFFormulaEvaluator evaluator = new XSSFFormulaEvaluator(this.workbook);
+
         for(int i = 0;i <= sheet.getLastRowNum(); ++i){
             XSSFRow row = sheet.getRow(i);
             Map<String, Object> rowData = new HashMap<String, Object>();
@@ -86,11 +91,17 @@ public class XlsxResolveServiceImpl implements XlsxResolveService {
                 }catch(NullPointerException e){
                     continue;
                 }
-                
+
                 if(cellData != null){
                     try{
-                        int numbericCellData = Integer.parseInt(cellData);
-                        rowData.put(columnList.get(j),numbericCellData);
+                        if(row.getCell(j).getCellType() == Cell.CELL_TYPE_FORMULA){
+                            CellValue cellValue = evaluator.evaluate(row.getCell(j));
+                            double doubleCellValue = cellValue.getNumberValue();
+                            rowData.put(columnList.get(j),doubleCellValue);
+                        } else {
+                            double numbericCellData = Double.parseDouble(cellData);
+                            rowData.put(columnList.get(j), numbericCellData);
+                        }
                     }catch(NumberFormatException e){
                         rowData.put(columnList.get(j),cellData);
                     }

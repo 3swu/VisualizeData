@@ -46,7 +46,7 @@ public class FileController {
         return null;
     }
 
-    @RequestMapping(value = "/getFileSheetList/{filename}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getFileSheetList/{filename}/tag", method = RequestMethod.GET)
     public @ResponseBody List<String> getFileSheetList(@PathVariable("filename") String fileName, HttpSession session){
         List<File> fileList = fileService.getUserFileList(session);
         for(File file : fileList){

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,27 +86,23 @@ public class XlsxResolveServiceImpl implements XlsxResolveService {
                     continue;
                 }
 
-                String cellData;
-                try{
-                    cellData = row.getCell(j).toString();
-                }catch(NullPointerException e){
-                    continue;
-                }
-
-                if(cellData != null){
-                    try{
-                        if(row.getCell(j).getCellType() == Cell.CELL_TYPE_FORMULA){
+                    try {
+                        if (row.getCell(j).getCellType() == Cell.CELL_TYPE_FORMULA) {
                             CellValue cellValue = evaluator.evaluate(row.getCell(j));
                             double doubleCellValue = cellValue.getNumberValue();
-                            rowData.put(columnList.get(j),doubleCellValue);
+                            rowData.put(columnList.get(j), doubleCellValue);
+                        } else if (row.getCell(j).getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            double numericCellValue = Double.parseDouble(
+                                    new DecimalFormat("0").format(row.getCell(j).getNumericCellValue()));
+                            rowData.put(columnList.get(j), numericCellValue);
+                            //XXX:不能正确解析EXCEL中使用科学计数法的大数字，原因未知...
                         } else {
-                            double numbericCellData = Double.parseDouble(cellData);
-                            rowData.put(columnList.get(j), numbericCellData);
+                            rowData.put(columnList.get(j), row.getCell(j).toString());
                         }
-                    }catch(NumberFormatException e){
-                        rowData.put(columnList.get(j),cellData);
+                    }catch(NullPointerException e){
+                        continue;
                     }
-                }
+
             }
             if(!rowData.isEmpty()){
                 sheetContent.add(rowData);

@@ -8,15 +8,26 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
     <script>
         $(document).ready(function () {
-            $("#loginBtn").onclick(function () {
+            $("#alertTxt").hide();
+            $("#loginBtn").click(function () {
+                $("#alertTxt").hide();
+                var username = $("#user_login").val();
+                var password = $("#user_pass").val();
                 $.ajax({
                     url:'account/login',
-                    data:{'username':$("#user_login").val(),"password":$("#user_pass").val()},
+                    data:{"username":username,"password":password},
                     type:'POST',
-
+                    success:function (data) {
+                        if(data == 'success') {
+                            window.location.href = 'main/' + username.slice(0, username.indexOf('@'));
+                        }else if(data == 'failed'){
+                            $("#alertTxt").show();
+                            $("#alertTxt").text('用户名或密码错误!');
+                        }
+                    }
                 });
             });
         });
@@ -28,7 +39,7 @@
         #loginDiv{
 
             margin: 150px auto;
-            height: 300px;
+            height: 310px;
             width: 400px;
             background-color: white;
             border-radius: 5px;
@@ -60,6 +71,10 @@
             font-size: large;
             color: white;
         }
+        #alertTxt{
+            color: #ff5346;
+            padding-left: 140px;
+        }
     </style>
     <title>Title</title>
 </head>
@@ -83,6 +98,9 @@
         </p>
     </form>
     <button id="loginBtn">登录</button>
+    <p>
+        <a id="alertTxt">错误</a>
+    </p>
 </div>
 </body>
 </html>

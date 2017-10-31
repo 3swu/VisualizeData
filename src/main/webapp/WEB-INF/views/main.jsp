@@ -81,8 +81,9 @@
                 processData:false,
                 contentType:false,
                 success:function(data){
-                    alert(data.slice(0,6));
-                    if(data.slice(0,6) == 'success'){
+                    alert(data);
+                    alert(dataObj[0].slice(0,6));
+                    if(dataObj[0].slice(0,6) == 'success'){
                         loadFileList();
                     }
                 }

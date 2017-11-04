@@ -43,6 +43,7 @@
             height: 95%;
             min-height: 550px;
             background-color: #FFFFFF;
+            overflow: auto;
         }
         .maindiv{
             background-color: white;
@@ -92,12 +93,14 @@
 //            })
         });
 
+        var filelistobj;
         function loadFileList(){
+            $("#filelistform").empty();
             $.ajax({
                 url:'http://localhost:8080/file/getfilelist',
                 type:'GET',
                 success:function(data){
-                    var filelistobj = JSON.parse(data);
+                    filelistobj = JSON.parse(data);
                     for(var i in filelistobj){
                         $("#filelistform").append(
                             '<input type="radio" class="fileradio" name="radio" onclick="radioChange(this)" id="file'+i+'">'+filelistobj[i]['fileName']+'</input><br>'
@@ -107,8 +110,36 @@
             })
         }
 
+        var fileSheetList;
+        var fileName;
         function radioChange(radio) {
-            alert(radio.id.slice(4,radio.id.length));
+            $("#sheetlistform").empty();
+            fileName = filelistobj[radio.id.slice(4,radio.id.length)]['fileName'];
+            $.ajax({
+                url:'http://localhost:8080/file/getFileSheetList/'+ fileName +'/tag',
+                type:'GET',
+                success:function (data) {
+                    fileSheetList = JSON.parse(data);
+                    for(var i in fileSheetList){
+                        $("#sheetlistform").append(
+                            '<input type="radio" class="sheetradio" name="sheetradio" onclick="sheetRadioChange(this)" id="sheet'+i+'">'+fileSheetList[i]+'</input><br>'
+                        )
+                    }
+                }
+            })
+
+        }
+
+        function sheetRadioChange(radio) {
+            $("#chartDiv").empty();
+            var sheetName = fileSheetList[radio.id.slice(5,radio.id.length)];
+            $.ajax({
+                url:'/file/getContent/' + fileName + '/' + sheetName,
+                type:'GET',
+                success:function (data) {
+                    $("#chartDiv").append(data);
+                }
+            })
         }
 
     </script>
@@ -116,24 +147,25 @@
 
 <body>
 <div id="head">此处显示  id "head" 的内容</div>
-<div id="chartDiv" class="maindiv">此处显示  id "chartDiv" 的内容</div>
+<div id="chartDiv" class="maindiv" style="overflow: auto">此处显示  id "chartDiv" 的内容</div>
 <div id="settingDiv" class="maindiv">
 
-    <form id="uploadForm">
+    <div id="uploadDiv">
         上传文件<input type="file" name="file" id="uploadfile">
         <button id="uploadBtn">上传</button>
-    </form>
+    </div>
     <hr>
     <a>文件列表</a>
-    <div id="filelist">
-        <form id="filelistform">
+    <div id="filelist" style="height: 20%;overflow: auto">
+        <div id="filelistform">
 
-        </form>
+        </div>
     </div>
-    <div id="sheetlist">
-        <form id="sheetlistform">
+    <a>Sheet列表</a>
+    <div id="sheetlist"style="height: 20%;overflow: auto">
+        <div id="sheetlistform">
 
-        </form>
+        </div>
     </div>
 </div>
 </body>

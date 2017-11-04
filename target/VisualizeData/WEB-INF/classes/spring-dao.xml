@@ -34,15 +34,15 @@
 
         <!-- 初始化时获取的连接数，取值在minPoolSize和maxPoolSize之间 -->
         <property name="initialPoolSize">
-            <value>5</value>
+            <value>2</value>
         </property>
 
-        <!-- 最大空闲时间，60秒未使用则连接被丢弃。缺省：永不丢弃（0S） -->
+        <!-- 最大空闲时间，60秒未使用则连接被丢弃。缺省：永不丢弃（0S）
         <property name="maxIdleTime">
             <value>60</value>
         </property>
 
-        <!-- 当连接池中的连接耗尽时，c3p0一次同时获取的连接数。缺省:3 -->
+         当连接池中的连接耗尽时，c3p0一次同时获取的连接数。缺省:3 -->
         <property name="acquireIncrement">
             <value>2</value>
         </property>

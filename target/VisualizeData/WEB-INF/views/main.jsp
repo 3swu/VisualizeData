@@ -49,11 +49,47 @@
             border-radius: 5px;
             box-shadow: 2px 2px 2px gainsboro;
         }
+        #filelist{
+
+        }
     </style>
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
     <script>
         $(document).ready(function () {
             loadFileList();
+
+            $("#uploadBtn").click(function () {
+                var formData = new FormData();
+                formData.append('file',$('#uploadfile')[0].files[0]);
+                $.ajax({
+                    url:'http://localhost:8080/file/uploadfile',
+                    type:'POST',
+                    cache:false,
+                    data:formData,
+                    processData:false,
+                    contentType:false,
+                    success:function (data) {
+                        if(data.slice(0,7) == 'success') {
+                            loadFileList();
+                        }
+                        else if(data == 'file existed'){
+                            alert('文件已存在');
+                        }
+                        else if(data == 'failed'){
+                            alert('上传失败');
+                        }
+                    }
+                })
+            })
+
+//            $(".fileradio").change(function () {
+//                alert($(this).id);
+//                var fileId = $(this).id.slice(3,$(this).id.length);
+//                alert(fileId);
+////                $.ajax({
+////                    url:'http://localhost:8080/file/getFileSheetList/'++'/tag'
+////                })
+//            })
         });
 
         function loadFileList(){
@@ -64,31 +100,17 @@
                     var filelistobj = JSON.parse(data);
                     for(var i in filelistobj){
                         $("#filelistform").append(
-                            '<input type="radio" class="fileradio" name="radio" id="file'+i+'">'+filelistobj[i]['fileName']+'</input><br>'
+                            '<input type="radio" class="fileradio" name="radio" onclick="radioChange(this)" id="file'+i+'">'+filelistobj[i]['fileName']+'</input><br>'
                         )
                     }
                 }
             })
         }
-        
-        function uploadfile() {
-            var formData = new FormData();
-            formData.append("file",document.getElementById("file").files[0]);
-            $.ajax({
-                url:'file/uploadfile',
-                type:'POST',
-                data:formData,
-                processData:false,
-                contentType:false,
-                success:function(data){
-                    alert(data);
-                    alert(dataObj[0].slice(0,6));
-                    if(dataObj[0].slice(0,6) == 'success'){
-                        loadFileList();
-                    }
-                }
-            })
+
+        function radioChange(radio) {
+            alert(radio.id.slice(4,radio.id.length));
         }
+
     </script>
 </head>
 
@@ -97,14 +119,19 @@
 <div id="chartDiv" class="maindiv">此处显示  id "chartDiv" 的内容</div>
 <div id="settingDiv" class="maindiv">
 
-    <form method="POST" action="/file/uploadfile" enctype="multipart/form-data">
+    <form id="uploadForm">
         上传文件<input type="file" name="file" id="uploadfile">
-        <button onclick="uploadfile()">上传</button>
+        <button id="uploadBtn">上传</button>
     </form>
     <hr>
     <a>文件列表</a>
     <div id="filelist">
         <form id="filelistform">
+
+        </form>
+    </div>
+    <div id="sheetlist">
+        <form id="sheetlistform">
 
         </form>
     </div>

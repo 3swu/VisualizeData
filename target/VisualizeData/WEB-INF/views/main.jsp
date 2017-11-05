@@ -57,8 +57,11 @@
     <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
     <script>
         $(document).ready(function () {
-            loadFileList();
+            loadFileList();//页面加载完毕后加载文件列表
 
+            /**
+             * 文件上传
+             */
             $("#uploadBtn").click(function () {
                 var formData = new FormData();
                 formData.append('file',$('#uploadfile')[0].files[0]);
@@ -93,7 +96,10 @@
 //            })
         });
 
-        var filelistobj;
+        var filelistobj;//文件列表
+        /**
+         * 从服务器读取用户文件列表并且加载到页面
+         */
         function loadFileList(){
             $("#filelistform").empty();
             $.ajax({
@@ -110,8 +116,13 @@
             })
         }
 
-        var fileSheetList;
-        var fileName;
+        var fileSheetList;//文件的Sheet列表
+        var fileName;//当前选定的文件名
+
+        /**
+         * 文件列表中的单选框选定之后，读取当前选定文件的Sheet列表并加载到页面
+         * @param radio
+         */
         function radioChange(radio) {
             $("#sheetlistform").empty();
             fileName = filelistobj[radio.id.slice(4,radio.id.length)]['fileName'];
@@ -130,6 +141,10 @@
 
         }
 
+        /**
+         * Sheet列表的单选框选定之后，读取当前选定Sheet页面的内容并加载到页面中
+         * @param radio
+         */
         function sheetRadioChange(radio) {
             $("#chartDiv").empty();
             var sheetName = fileSheetList[radio.id.slice(5,radio.id.length)];
@@ -138,8 +153,22 @@
                 type:'GET',
                 success:function (data) {
                     $("#chartDiv").append(data);
+                    loadColumnList(data);
                 }
             })
+        }
+
+        /**
+         * 加载Sheet页面的列名（属性）
+         * @param data
+         */
+        var columnList;
+        function loadColumnList(data) {
+            dataObj = JSON.parse(data);
+            columnList = new Array();
+            for(var key in dataObj[0]){
+                columnList.push(key);
+            }
         }
 
     </script>

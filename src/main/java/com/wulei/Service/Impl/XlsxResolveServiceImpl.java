@@ -29,7 +29,7 @@ public class XlsxResolveServiceImpl implements XlsxResolveService {
 
     private List<String> sheetList = null;
     private XSSFWorkbook workbook = null;
-
+    private List<String> columnList = null;
     /**
      * Init private objects
      * @param filePath
@@ -71,7 +71,7 @@ public class XlsxResolveServiceImpl implements XlsxResolveService {
         List<Object> sheetContent = new ArrayList<Object>();
 
         XSSFSheet sheet = this.workbook.getSheet(sheetName);
-        List<String> columnList = new ArrayList<String>();
+        columnList = new ArrayList<String>();
         int lastCellNum = sheet.getRow(0).getLastCellNum();
 
         XSSFFormulaEvaluator evaluator = new XSSFFormulaEvaluator(this.workbook);
@@ -117,5 +117,18 @@ public class XlsxResolveServiceImpl implements XlsxResolveService {
      */
     public List<String> getSheetList() {
         return this.sheetList;
+    }
+
+    /**
+     * Should be called after calling method 'List<Object> getContentBySheetName' for sure!
+     * Because the object 'columnList' is initialized in the method 'getContentBySheetName',
+     * or it will return null.
+     *
+     * @return columnList
+     */
+    public List<String> getColumnListInSheet() {
+        if(columnList != null)
+            return columnList;
+        return null;
     }
 }

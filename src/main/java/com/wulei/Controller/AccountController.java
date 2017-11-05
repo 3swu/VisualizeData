@@ -53,4 +53,14 @@ public class AccountController {
             return "success";
         return "failed";
     }
+
+    /**
+     * 当前登录的用户
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/nowuser", method = RequestMethod.GET)
+    public @ResponseBody User nowUser(HttpSession session){
+        return (User) session.getAttribute("user");
+    }
 }

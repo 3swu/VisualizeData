@@ -102,5 +102,6 @@
         <a id="alertTxt">错误</a>
     </p>
 </div>
+<a style="margin-top: 95%; color: #7c7b83; margin-left: 40%">不推荐使用IE或Microsoft Edge浏览器</a>
 </body>
 </html>

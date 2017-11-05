@@ -9,4 +9,5 @@ public interface XlsxResolveService {
 
     public List<String> getSheetList();
 
+    public List<String> getColumnListInSheet();
 }

@@ -86,6 +86,15 @@
                 })
             })
 
+            $.ajax({
+                url:'http://localhost:8080/account/nowuser',
+                type:'GET',
+                success:function (data) {
+                    var dataObj = JSON.parse(data);
+                    $("#userDisplay").append(dataObj['username']);
+                }
+            })
+
 //            $(".fileradio").change(function () {
 //                alert($(this).id);
 //                var fileId = $(this).id.slice(3,$(this).id.length);
@@ -97,6 +106,11 @@
         });
 
         var filelistobj;//文件列表
+        var fileSheetList;//文件的Sheet列表
+        var fileName;//当前选定的文件名
+        var propboxlist = new Set();//属性数组
+        var columnList;
+        var sheetContent;
         /**
          * 从服务器读取用户文件列表并且加载到页面
          */
@@ -109,15 +123,14 @@
                     filelistobj = JSON.parse(data);
                     for(var i in filelistobj){
                         $("#filelistform").append(
-                            '<input type="radio" class="fileradio" name="radio" onclick="radioChange(this)" id="file'+i+'">'+filelistobj[i]['fileName']+'</input><br>'
+                            '<label><input type="radio" class="fileradio" name="radio" onclick="radioChange(this)" id="file'+i+'">'+filelistobj[i]['fileName']+'</input></label><br>'
                         )
                     }
                 }
             })
         }
 
-        var fileSheetList;//文件的Sheet列表
-        var fileName;//当前选定的文件名
+
 
         /**
          * 文件列表中的单选框选定之后，读取当前选定文件的Sheet列表并加载到页面
@@ -133,7 +146,7 @@
                     fileSheetList = JSON.parse(data);
                     for(var i in fileSheetList){
                         $("#sheetlistform").append(
-                            '<input type="radio" class="sheetradio" name="sheetradio" onclick="sheetRadioChange(this)" id="sheet'+i+'">'+fileSheetList[i]+'</input><br>'
+                            '<label><input type="radio" class="sheetradio" name="sheetradio" onclick="sheetRadioChange(this)" id="sheet'+i+'">'+fileSheetList[i]+'</input></label>'
                         )
                     }
                 }
@@ -142,19 +155,40 @@
         }
 
         /**
-         * Sheet列表的单选框选定之后，读取当前选定Sheet页面的内容并加载到页面中
+         * Sheet列表的单选框选定之后，读取页面的属性列表并加载到页面
          * @param radio
          */
         function sheetRadioChange(radio) {
-            $("#chartDiv").empty();
+            $("#propertylistform").empty();
             var sheetName = fileSheetList[radio.id.slice(5,radio.id.length)];
             $.ajax({
                 url:'/file/getContent/' + fileName + '/' + sheetName,
                 type:'GET',
                 success:function (data) {
-                    $("#chartDiv").append(data);
+                    sheetContent = data;
                     loadColumnList(data);
+                    for(var i in columnList){
+                        $("#propertylistform").append(
+                            '<label><input type="checkbox" class="propertycheckbox" name="propertybox" onclick="propboxchange(this)" id="propbox'+i+'">'+columnList[i]+'</label>'
+                        )
+                    }
                 }
+            })
+        }
+
+        /**
+         * 维持选中属性数组
+         */
+        function propboxchange(box) {
+            var columnName = columnList[box.id.slice(7,box.id.length)];
+
+            if(propboxlist.has(columnName)){
+                propboxlist.delete(columnName);
+            }else{
+                propboxlist.add(columnName);
+            }
+            propboxlist.forEach(function (t) {
+                console.log(t);
             })
         }
 
@@ -162,7 +196,7 @@
          * 加载Sheet页面的列名（属性）
          * @param data
          */
-        var columnList;
+
         function loadColumnList(data) {
             dataObj = JSON.parse(data);
             columnList = new Array();
@@ -171,11 +205,27 @@
             }
         }
 
+        /**
+         * 退出登录
+         * 页面重定向到登录页面
+         */
+        function logout(){
+            $.ajax({
+                url:'http://localhost:8080/account/logout',
+                type:'GET',
+                success:function () {
+                    window.location.href = 'http://localhost:8080/showlogin';
+                }
+            })
+        }
     </script>
 </head>
 
 <body>
-<div id="head">此处显示  id "head" 的内容</div>
+<div id="head">
+    <a id="userDisplay">当前用户：</a>
+    <a id="logout" href="javascript:logout()">   退出</a>
+</div>
 <div id="chartDiv" class="maindiv" style="overflow: auto">此处显示  id "chartDiv" 的内容</div>
 <div id="settingDiv" class="maindiv">
 
@@ -185,14 +235,20 @@
     </div>
     <hr>
     <a>文件列表</a>
-    <div id="filelist" style="height: 20%;overflow: auto">
+    <div id="filelist" style="height: 15%;overflow: auto">
         <div id="filelistform">
 
         </div>
     </div>
     <a>Sheet列表</a>
-    <div id="sheetlist"style="height: 20%;overflow: auto">
+    <div id="sheetlist"style="height: 10%;overflow: auto">
         <div id="sheetlistform">
+
+        </div>
+    </div>
+    <a>属性列表</a>
+    <div id="propertylist" style="height: 15%; overflow: auto">
+        <div id="propertylistform">
 
         </div>
     </div>

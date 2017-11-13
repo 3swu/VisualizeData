@@ -37,7 +37,7 @@ $(document).ready(function () {
     })
 
     $("#generateChart").click(function () {
-        console.log(getDataFromContent(sheetContent, columnList));
+        //console.log(getDataFromContent(sheetContent, columnList));
         displayChart(myChart);
     })
 
@@ -196,6 +196,7 @@ function getDataFromContent(content, column , proplist){
         }
         dataArray.push(nowDataArray);
     }
+    console.log(dataArray);
     return dataArray;
 }
 
@@ -232,12 +233,10 @@ function displayChart(myChart) {
         },
         series:{
             name: '总分',
-            data: function () {
-                return getDataFromContent(sheetContent, columnList, propboxlist);
-            },
+            data: getDataFromContent(sheetContent, columnList, propboxlist),
             type: 'scatter',
             symbolSize: function (data) {
-                return data[columnList.indexOf('总分')];
+                return data[columnList.indexOf('总分')] * 10;
             },
             label:{
                 emphasis:{

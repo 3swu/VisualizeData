@@ -30,6 +30,17 @@ String类型响应信息，登录成功返回"success"，失败返回"failed"。
 - 响应参数：
 String类型响应信息，推出成功返回"success"，失败返回"failed"。
 
+### 3.查询当前用户
+- url:`/account/nowuser`
+
+- HTTP请求方式：GET
+
+- 请求参数列表：无
+
+- 响应参数：
+JSON格式用户信息，username字段为用户名，
+如果没有登录用户，返回空字符串。
+
 ---
 ## 主界面
 url：`/`
